@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.A1PBackendAlNúvol">
         <activity
+            android:name=".RecipeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".IngredientAdapter"
+            android:exported="false" />
+        <activity
+            android:name=".Ingredient"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity

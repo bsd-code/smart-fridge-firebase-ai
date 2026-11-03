@@ -7,4 +7,12 @@
     <string name="create_a_new_account">Create a New Account</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="register">Register</string>
+    <string name="recipe_suggestion">Recipe Suggestion</string>
+    <string name="logout">Logout</string>
+    <string name="delete">Delete</string>
+    <string name="ingredient_name_e_g_chicken_breast">Ingredient Name (e.g., Chicken Breast)</string>
+    <string name="quantity_e_g_2">Quantity (e.g., 2)</string>
+    <string name="expiration">Expiration...</string>
+    <string name="add_ingredient">Add Ingredient</string>
+    <string name="clear">Clear</string>
 </resources>
