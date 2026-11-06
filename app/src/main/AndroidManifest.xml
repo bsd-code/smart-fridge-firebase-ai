@@ -15,12 +15,6 @@
             android:name=".RecipeActivity"
             android:exported="false" />
         <activity
-            android:name=".IngredientAdapter"
-            android:exported="false" />
-        <activity
-            android:name=".Ingredient"
-            android:exported="false" />
-        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity

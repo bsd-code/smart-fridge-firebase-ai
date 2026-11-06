@@ -1,32 +1,40 @@
 package cat.institutmarianao.a1_pbackendalnvol
 
-import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageButton
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
-class IngredientAdapter : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContentView(R.layout.activity_ingredient_adapter)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+// Adaptador de RecyclerView
+class IngredientAdapter(
+    private val ingredientList: MutableList<Ingredient>,
+    private val onItemClick: (Ingredient) -> Unit,
+    private val onDeleteClick: (Ingredient) -> Unit
+) : RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>() {
+
+    class IngredientViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val tvName: TextView = itemView.findViewById(R.id.tvIngredientName)
+        val tvQuantity: TextView = itemView.findViewById(R.id.tvQuantity)
+        val tvExpiration: TextView = itemView.findViewById(R.id.tvExpirationDate)
+        val btnDelete: ImageButton = itemView.findViewById(R.id.btnDelete)
     }
 
-// ESTA CLASE ES UN ADAPTADOR DE RECYCLERVIEW (No es una Activity)
-// Debe heredar de: RecyclerView.Adapter<IngredientAdapter.IngredientViewHolder>()
-// Parámetros a recibir en el constructor:
-// 1. Lista mutable de objetos Ingredient
-// 2. Función de callback al hacer clic en un elemento (para cargar datos en el formulario)
-// 3. Función de callback al pulsar la papelera (para pedir confirmación y eliminar)
-// Tareas a implementar en esta clase:
-// - Crear la clase interna ViewHolder que vincule los elementos de item_ingredient.xml (tvName, tvQuantity, tvExpiration, btnDelete)
-// - onCreateViewHolder: Inflar la vista de item_ingredient.xml
-// - onBindViewHolder: Pintar los datos del ingrediente en las vistas y asignar los setOnClickListener (tarjeta completa y botón eliminar)
-// - getItemCount: Devolver el tamaño de la lista
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): IngredientViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_ingredient, parent, false)
+        return IngredientViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
+        val ingredient = ingredientList[position]
+        holder.tvName.text = ingredient.name
+        holder.tvQuantity.text = "${ingredient.quantity} ${ingredient.unit}"
+        holder.tvExpiration.text = ingredient.expirationDate
+
+        holder.itemView.setOnClickListener { onItemClick(ingredient) }
+        holder.btnDelete.setOnClickListener { onDeleteClick(ingredient) }
+    }
+
+    override fun getItemCount(): Int = ingredientList.size
 }
