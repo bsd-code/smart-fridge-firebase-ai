@@ -1,31 +1,67 @@
 package cat.institutmarianao.a1_pbackendalnvol
 
 import android.os.Bundle
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var etIngredientName : TextInputEditText
+    private lateinit var etQuantity : TextInputEditText
+    private lateinit var etExpirationDate : TextInputLayout
+    private lateinit var spUnit : Spinner
+    private lateinit var spCategory : Spinner
+    private lateinit var btnAddUpdate : MaterialButton
+    private lateinit var btnClear : MaterialButton
+    private lateinit var rvIngredients : RecyclerView
+
+    private lateinit var ingredientAdapter: IngredientAdapter
+    private val ingredientList = mutableListOf<Ingredient>()
+
+    private var selectedIngredient: Ingredient? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
+        initComponents()
+        setupSpinners()
+        setupRecyclerView() -> Conectar el adaptador con el RecyclerView
+        initListeners()
+        loadIngredientsFromFirestore() -> Escuchar cambios en la colección del usuario
     }
 
-// 1. Declarar variables lateinit para vistas (etIngredientName, etQuantity, etExpirationDate, spUnit, spCategory, btnAddUpdate, btnClear, rvIngredients)
-// 2. Declarar variable para guardar el ingrediente seleccionado actualmente (null si estamos creando uno nuevo)
-// 3. Declarar el adaptador del RecyclerView y la lista local de ingredientes
+    private fun initComponents(){
+        etIngredientName = findViewById(R.id.etIngredientName)
+        etQuantity = findViewById(R.id.etQuantity)
+        etExpirationDate = findViewById(R.id.etExpirationDate)
+        spUnit = findViewById(R.id.spUnit)
+        spCategory = findViewById(R.id.spCategory)
+        btnAddUpdate = findViewById(R.id.btnAddUpdateIngredient)
+        btnClear = findViewById(R.id.btnClear)
+        rvIngredients = findViewById(R.id.rvIngredients)
+    }
 
-// override fun onCreate(...) {
-//    setContentView(R.layout.activity_main)
-//    - initComponents()
-//    - setupSpinners() -> Cargar opciones en los desplegables de Unit y Category
-//    - setupRecyclerView() -> Conectar el adaptador con el RecyclerView
-//    - initListeners()
-//    - loadIngredientsFromFirestore() -> Escuchar cambios en la colección del usuario
-// }
+    private fun setupSpinners(){
+        val units = listOf("[Unit]", "units", "grams", "kg", "liters", "ml", "packs")
+        val categories = listOf("[Category]", "Fruits & Vegetables", "Meat & Fish", "Dairy", "Beverages", "Frozen Foods", "Others")
+
+        val unitAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, units)
+        unitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spUnit.adapter = unitAdapter
+
+        val categoryAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spCategory.adapter = categoryAdapter
+    }
 
 // override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 //    Inflar el menú de [app/src/main/res/menu/menu_main.xml](file:///home/cfgs/AndroidStudioProjects/A1PBackendalnvol/app/src/main/res/menu/menu_main.xml)
