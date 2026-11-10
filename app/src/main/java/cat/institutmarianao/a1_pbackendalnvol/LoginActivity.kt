@@ -3,15 +3,15 @@ package cat.institutmarianao.a1_pbackendalnvol
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
+
+    private lateinit var auth: FirebaseAuth
 
     // Campos de entrada (para leer el texto ingresado)
     private lateinit var etEmail: TextInputEditText
@@ -29,7 +29,10 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
+        auth = FirebaseAuth.getInstance()
+
         initComponents()
+        initListeners()
     }
 
     private fun initComponents() {
@@ -43,10 +46,9 @@ class LoginActivity : AppCompatActivity() {
         btnSignUp = findViewById(R.id.btnSignUp)
     }
 
-
     private fun initListeners() {
         btnLogin.setOnClickListener {
-            if(validateInputs()){
+            if (validateInputs()) {
                 performLogin()
             }
         }
@@ -57,8 +59,8 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun validateInputs(): Boolean {
-        val email = etEmail.toString().trim()
-        val password = etPassword.toString().trim()
+        val email = etEmail.text?.toString()?.trim().orEmpty()
+        val password = etPassword.text?.toString()?.trim().orEmpty()
 
         var isValid = true
 
@@ -81,16 +83,25 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun performLogin() {
-        val email = etEmail.text.toString().trim()
-        val password = etPassword.text.toString().trim()
+        val email = etEmail.text?.toString()?.trim().orEmpty()
+        val password = etPassword.text?.toString()?.trim().orEmpty()
 
-        val loginExitoso = false
-
-        if (loginExitoso){
-            Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_LONG).show()
-        }
+        btnLogin.isEnabled = false
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                btnLogin.isEnabled = true
+                if (task.isSuccessful) {
+                    Toast.makeText(this, "¡Bienvenido!", Toast.LENGTH_SHORT).show()
+                    navigateToMain()
+                    finish()
+                } else {
+                    Toast.makeText(
+                        this,
+                        "Error al iniciar sesión: ${task.exception?.localizedMessage}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
     }
 
     private fun navigateToRegister() {

@@ -1,22 +1,31 @@
 package cat.institutmarianao.a1_pbackendalnvol
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var etIngredientName : TextInputEditText
     private lateinit var etQuantity : TextInputEditText
-    private lateinit var etExpirationDate : TextInputLayout
+    private lateinit var etExpirationDate : TextInputEditText
     private lateinit var spUnit : Spinner
     private lateinit var spCategory : Spinner
     private lateinit var btnAddUpdate : MaterialButton
@@ -32,11 +41,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        auth = FirebaseAuth.getInstance()
+
         initComponents()
         setupSpinners()
-        setupRecyclerView() -> Conectar el adaptador con el RecyclerView
-        initListeners()
-        loadIngredientsFromFirestore() -> Escuchar cambios en la colección del usuario
+        // setupRecyclerView() -> Conectar el adaptador con el RecyclerView
+        // initListeners()
+        // loadIngredientsFromFirestore() -> Escuchar cambios en la colección del usuario
     }
 
     private fun initComponents(){
@@ -63,14 +77,26 @@ class MainActivity : AppCompatActivity() {
         spCategory.adapter = categoryAdapter
     }
 
-// override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//    Inflar el menú de [app/src/main/res/menu/menu_main.xml](file:///home/cfgs/AndroidStudioProjects/A1PBackendalnvol/app/src/main/res/menu/menu_main.xml)
-// }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
 
-// override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//    - Si pulsa icono Receta -> llamar a generateRecipeWithAI()
-//    - Si pulsa icono Salir -> cerrar sesión en FirebaseAuth y volver a LoginActivity
-// }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_recipe -> {
+                generateRecipeWithAI()
+                true
+            }
+            R.id.action_logout -> {
+                auth.signOut()
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
 // private fun initListeners() {
 //    - etExpirationDate: Al hacer clic, mostrar un DatePickerDialog para seleccionar la fecha
@@ -97,4 +123,8 @@ class MainActivity : AppCompatActivity() {
 //    4. Enviar la consulta a la API de Firebase Vertex AI / Gemini
 //    5. Al recibir la respuesta: Ocultar el diálogo de carga e iniciar RecipeActivity pasando la receta mediante Intent
 // }
+
+    private fun generateRecipeWithAI(){
+
+    }
 }
