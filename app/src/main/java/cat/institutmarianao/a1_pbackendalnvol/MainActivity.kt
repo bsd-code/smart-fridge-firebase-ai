@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         initComponents()
         setupSpinners()
         // setupRecyclerView() -> Conectar el adaptador con el RecyclerView
-        // initListeners()
+        initListeners()
         // loadIngredientsFromFirestore() -> Escuchar cambios en la colección del usuario
     }
 
@@ -98,18 +98,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-// private fun initListeners() {
-//    - etExpirationDate: Al hacer clic, mostrar un DatePickerDialog para seleccionar la fecha
-//    - btnAddUpdate: Si el ingrediente seleccionado es null -> Guardar nuevo en Firestore. Si no es null -> Actualizar existente en Firestore.
-//    - btnClear: Llama a clearForm()
-// }
+    private fun clearForm() {
+        etIngredientName.setText("")
+        etQuantity.setText("")
+        etExpirationDate.setText("")
+        spUnit.setSelection(0)
+        spCategory.setSelection(0)
+        btnAddUpdate.text = getString(R.string.add_ingredient)
+        selectedIngredient = null
+    }
 
-// private fun clearForm() {
-//    - Limpia el texto de todos los EditText
-//    - Resetea los Spinners a la primera opción
-//    - Cambia el texto del botón principal de nuevo a "Add Ingredient"
-//    - Establece el ingrediente seleccionado a null
-// }
+    private fun initListeners() {
+        //    - etExpirationDate: Al hacer clic, mostrar un DatePickerDialog para seleccionar la fecha
+        //    - btnAddUpdate: Si el ingrediente seleccionado es null -> Guardar nuevo en Firestore. Si no es null -> Actualizar existente en Firestore.
+        btnClear.setOnClickListener {
+            clearForm()
+        }
+    }
 
 // private fun showDeleteConfirmationDialog(ingredient: Ingredient) {
 //    - Mostrar un AlertDialog preguntando si realmente desea eliminar el ingrediente
