@@ -47,4 +47,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-vertexai")
+    implementation("io.noties.markwon:core:4.6.2")
 }

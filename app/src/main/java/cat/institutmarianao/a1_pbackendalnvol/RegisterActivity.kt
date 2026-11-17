@@ -4,14 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import cat.institutmarianao.a1_pbackendalnvol.data.repository.AuthRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
 
 class RegisterActivity : AppCompatActivity() {
 
-    private lateinit var auth: FirebaseAuth
+    private val authRepository = AuthRepository()
 
     private lateinit var tilEmail: TextInputLayout
     private lateinit var tilPassword: TextInputLayout
@@ -26,8 +26,6 @@ class RegisterActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
-
-        auth = FirebaseAuth.getInstance()
 
         initComponents()
         initListeners()
@@ -93,21 +91,20 @@ class RegisterActivity : AppCompatActivity() {
         val password = etPassword.text?.toString()?.trim().orEmpty()
 
         btnRegister.isEnabled = false
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                btnRegister.isEnabled = true
-                if (task.isSuccessful) {
-                    Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    startActivity(intent)
-                    finishAffinity()
-                } else {
-                    Toast.makeText(
-                        this,
-                        "Error al registrar: ${task.exception?.localizedMessage}",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+        authRepository.signUp(email, password) { success, errorMsg ->
+            btnRegister.isEnabled = true
+            if (success) {
+                Toast.makeText(this, "Registro exitoso", Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finishAffinity()
+            } else {
+                Toast.makeText(
+                    this,
+                    "Error al registrar: ${errorMsg ?: "Error de registro"}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
+        }
     }
 }

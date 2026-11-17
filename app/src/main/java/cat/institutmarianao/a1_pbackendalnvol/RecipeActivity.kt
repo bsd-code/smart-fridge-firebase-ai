@@ -1,30 +1,29 @@
 package cat.institutmarianao.a1_pbackendalnvol
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import com.google.android.material.appbar.MaterialToolbar
+import io.noties.markwon.Markwon
 
 class RecipeActivity : AppCompatActivity() {
+
+    private lateinit var tvRecipeContent: TextView
+    private lateinit var toolbarRecipe: MaterialToolbar
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_recipe)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        toolbarRecipe = findViewById(R.id.toolbarRecipe)
+        tvRecipeContent = findViewById(R.id.tvRecipeContent)
+
+        toolbarRecipe.setNavigationOnClickListener {
+            finish()
         }
+
+        val recipeText = intent.getStringExtra("RECIPE_TEXT") ?: "No recipe content found."
+        val markwon = Markwon.create(this)
+        markwon.setMarkdown(tvRecipeContent, recipeText)
     }
-
-// 1. Declarar variable lateinit para el TextView que mostrará la receta (recipeTextView)
-
-// override fun onCreate(...) {
-//    setContentView(R.layout.activity_recipe)
-//    - Vincular recipeTextView mediante findViewById
-//    - Obtener el String de la receta enviado desde MainActivity a través del Intent (intent.getStringExtra("..."))
-//    - Crear una instancia de Markwon (Markwon.create(this))
-//    - Renderizar el Markdown recibido en el TextView: markwon.setMarkdown(recipeTextView, recipeText)
-// }
 }

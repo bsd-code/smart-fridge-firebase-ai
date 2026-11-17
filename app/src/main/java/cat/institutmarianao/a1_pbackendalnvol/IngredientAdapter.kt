@@ -29,8 +29,9 @@ class IngredientAdapter(
     override fun onBindViewHolder(holder: IngredientViewHolder, position: Int) {
         val ingredient = ingredientList[position]
         holder.tvName.text = ingredient.name
-        holder.tvQuantity.text = "${ingredient.quantity} ${ingredient.unit}"
-        holder.tvExpiration.text = ingredient.expirationDate
+        val unitText = if (!ingredient.unit.isNullOrEmpty()) " ${ingredient.unit}" else ""
+        holder.tvQuantity.text = "${ingredient.quantity}$unitText"
+        holder.tvExpiration.text = ingredient.expirationDate ?: ""
 
         holder.itemView.setOnClickListener { onItemClick(ingredient) }
         holder.btnDelete.setOnClickListener { onDeleteClick(ingredient) }
