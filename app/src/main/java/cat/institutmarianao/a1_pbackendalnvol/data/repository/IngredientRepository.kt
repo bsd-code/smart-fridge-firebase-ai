@@ -1,21 +1,28 @@
 package cat.institutmarianao.a1_pbackendalnvol.data.repository
 
+import android.util.Log
 import cat.institutmarianao.a1_pbackendalnvol.Ingredient
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 
 class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore.getInstance()) {
 
+    companion object {
+        private const val TAG = "IngredientRepository"
+    }
+
     fun listenIngredients(
         userId: String,
         onUpdate: (List<Ingredient>) -> Unit,
         onError: (String) -> Unit
     ): ListenerRegistration {
+        Log.d(TAG, "Subscribing to snapshot listener for userId: $userId")
         return db.collection("users")
             .document(userId)
             .collection("ingredients")
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
+                    Log.e(TAG, "Error in snapshot listener: ${error.message}")
                     onError(error.message ?: "Unknown Firestore error")
                     return@addSnapshotListener
                 }
@@ -44,9 +51,10 @@ class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore
                             )
                             list.add(ingredient)
                         } catch (e: Exception) {
-                            e.printStackTrace()
+                            Log.e(TAG, "Error parsing document ${doc.id}: ${e.message}")
                         }
                     }
+                    Log.d(TAG, "Loaded ${list.size} ingredients for user $userId")
                     onUpdate(list)
                 }
             }
@@ -55,9 +63,16 @@ class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore
     fun addIngredient(userId: String, ingredient: Ingredient, onResult: (Boolean, String?) -> Unit) {
         val ref = db.collection("users").document(userId).collection("ingredients").document()
         ingredient.id = ref.id
+        Log.d(TAG, "Adding new ingredient with id: ${ingredient.id}")
         ref.set(ingredient)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+            .addOnSuccessListener {
+                Log.d(TAG, "Ingredient added successfully")
+                onResult(true, null)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error adding ingredient: ${e.message}")
+                onResult(false, e.localizedMessage)
+            }
     }
 
     fun updateIngredient(
@@ -66,22 +81,36 @@ class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore
         updatedMap: Map<String, Any?>,
         onResult: (Boolean, String?) -> Unit
     ) {
+        Log.d(TAG, "Updating ingredient id: $ingredientId")
         db.collection("users")
             .document(userId)
             .collection("ingredients")
             .document(ingredientId)
             .update(updatedMap)
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+            .addOnSuccessListener {
+                Log.d(TAG, "Ingredient updated successfully")
+                onResult(true, null)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error updating ingredient: ${e.message}")
+                onResult(false, e.localizedMessage)
+            }
     }
 
     fun deleteIngredient(userId: String, ingredientId: String, onResult: (Boolean, String?) -> Unit) {
+        Log.d(TAG, "Deleting ingredient id: $ingredientId")
         db.collection("users")
             .document(userId)
             .collection("ingredients")
             .document(ingredientId)
             .delete()
-            .addOnSuccessListener { onResult(true, null) }
-            .addOnFailureListener { e -> onResult(false, e.localizedMessage) }
+            .addOnSuccessListener {
+                Log.d(TAG, "Ingredient deleted successfully")
+                onResult(true, null)
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error deleting ingredient: ${e.message}")
+                onResult(false, e.localizedMessage)
+            }
     }
 }

@@ -1,8 +1,9 @@
 package cat.institutmarianao.a1_pbackendalnvol
 
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ExampleUnitTest {
@@ -37,5 +38,16 @@ class ExampleUnitTest {
         assertEquals("liters", ingredient.unit)
         assertEquals("Dairy & Eggs", ingredient.category)
         assertEquals("15/12/2026", ingredient.expirationDate)
+    }
+
+    @Test
+    fun emailValidation_helper_worksCorrectly() {
+        fun isValidEmail(email: String): Boolean {
+            return email.contains("@") && email.contains(".") && email.length >= 5
+        }
+
+        assertTrue(isValidEmail("user@example.com"))
+        assertFalse(isValidEmail("invalidemail"))
+        assertFalse(isValidEmail(""))
     }
 }
