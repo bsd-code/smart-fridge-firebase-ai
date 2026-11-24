@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity() {
             onDeleteClick = { ingredient -> showDeleteConfirmationDialog(ingredient) }
         )
         rvIngredients.layoutManager = LinearLayoutManager(this)
+        rvIngredients.isNestedScrollingEnabled = false
         rvIngredients.adapter = ingredientAdapter
     }
 

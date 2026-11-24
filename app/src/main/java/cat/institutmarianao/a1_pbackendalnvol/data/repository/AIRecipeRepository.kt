@@ -16,16 +16,7 @@ class AIRecipeRepository {
             "- ${ingredient.name}: ${ingredient.quantity} ${ingredient.unit ?: ""} (${ingredient.category ?: ""})".trim()
         }
 
-        val prompt = """
-            Suggest a simple recipe I can make with the following ingredients: 
-            $ingredientsText
-
-            Please format the response using simple Markdown:
-            - Use a main heading for the recipe **Title**.
-            - Use subheadings like **Ingredients** and **Instructions** in bold.
-            - Use bullet points for the ingredients list.
-            - You can make key preparation steps **bold** as well.
-        """.trimIndent()
+        val prompt = "Suggest a simple recipe I can make with the following ingredients:\n$ingredientsText\n\nPlease format the response using simple Markdown:\n- Use a main heading for the recipe Title.\n- Use subheadings like Ingredients and Instructions in bold.\n- Use bullet points for the ingredients list.\n- You can make key preparation steps bold as well."
 
         Log.d(TAG, "Requesting AI recipe generation using Firebase AI / Gemini for ${ingredients.size} ingredients")
         return try {
@@ -40,18 +31,6 @@ class AIRecipeRepository {
     }
 
     private fun getFallbackRecipe(ingredientsText: String): String {
-        return """
-            # 🍳 Chef's Special Pantry Dish
-            
-            ## Ingredients
-            $ingredientsText
-            
-            ## Instructions
-            1. Prep all available ingredients by washing and cutting them into uniform pieces.
-            2. **Heat a pan** over medium heat with a drizzle of oil or butter.
-            3. **Saute the main ingredients** until golden brown and tender.
-            4. **Season** with salt, pepper, and herbs to taste.
-            5. **Serve hot** and enjoy your custom home-cooked meal!
-        """.trimIndent()
+        return "# 🍳 Chef's Special Pantry Dish\n\n## Ingredients\n$ingredientsText\n\n## Instructions\n1. Prep all available ingredients by washing and cutting them into uniform pieces.\n2. **Heat a pan** over medium heat with a drizzle of oil or butter.\n3. **Saute the main ingredients** until golden brown and tender.\n4. **Season** with salt, pepper, and herbs to taste.\n5. **Serve hot** and enjoy your custom home-cooked meal!"
     }
 }
