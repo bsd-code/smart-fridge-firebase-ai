@@ -2,6 +2,7 @@ package cat.institutmarianao.a1_pbackendalnvol.data.repository
 
 import android.util.Log
 import cat.institutmarianao.a1_pbackendalnvol.Ingredient
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 
@@ -39,7 +40,7 @@ class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore
                             }
                             val unit = doc.getString("unit")
                             val category = doc.getString("category")
-                            val expirationDate = doc.getString("expirationDate")
+                            val expirationDate = doc.getString("expiration") ?: doc.getString("expirationDate")
 
                             val ingredient = Ingredient(
                                 id = doc.id,
@@ -64,7 +65,19 @@ class IngredientRepository(private val db: FirebaseFirestore = FirebaseFirestore
         val ref = db.collection("users").document(userId).collection("ingredients").document()
         ingredient.id = ref.id
         Log.d(TAG, "Adding new ingredient with id: ${ingredient.id}")
-        ref.set(ingredient)
+
+        val docData = hashMapOf(
+            "id" to ingredient.id,
+            "name" to ingredient.name,
+            "quantity" to ingredient.quantity,
+            "unit" to ingredient.unit,
+            "category" to ingredient.category,
+            "expiration" to ingredient.expirationDate,
+            "expirationDate" to ingredient.expirationDate,
+            "addedAt" to FieldValue.serverTimestamp()
+        )
+
+        ref.set(docData)
             .addOnSuccessListener {
                 Log.d(TAG, "Ingredient added successfully")
                 onResult(true, null)
