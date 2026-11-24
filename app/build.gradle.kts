@@ -45,9 +45,15 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
+
+    // Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
+
+    // Dependencia para conectar la IA de Firebase (Vertex AI / Gemini):
     implementation("com.google.firebase:firebase-vertexai")
+
+    // Renderizado de Markdown para las recetas
     implementation("io.noties.markwon:core:4.6.2")
 }
