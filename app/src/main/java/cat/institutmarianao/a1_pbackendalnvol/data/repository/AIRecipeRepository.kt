@@ -2,10 +2,8 @@ package cat.institutmarianao.a1_pbackendalnvol.data.repository
 
 import android.util.Log
 import cat.institutmarianao.a1_pbackendalnvol.Ingredient
-
-// Para conectar la IA de Firebase (Vertex AI / Gemini), descomentar las siguientes líneas de importación:
-// import com.google.firebase.Firebase
-// import com.google.firebase.vertexai.vertexAI
+import com.google.firebase.Firebase
+import com.google.firebase.vertexai.vertexAI
 
 class AIRecipeRepository {
 
@@ -18,39 +16,27 @@ class AIRecipeRepository {
             "- ${ingredient.name}: ${ingredient.quantity} ${ingredient.unit ?: ""} (${ingredient.category ?: ""})".trim()
         }
 
-        /* 
-        ====================================================================================
-        LINEAS PARA CONECTAR LA IA DE FIREBASE (VERTEX AI / GEMINI)
-        ====================================================================================
-        Dependencia requerida en app/build.gradle.kts:
-        implementation("com.google.firebase:firebase-vertexai")
+        val prompt = """
+            Suggest a simple recipe I can make with the following ingredients: 
+            $ingredientsText
 
-        Para activar la consulta real a la IA, descomenta el siguiente bloque try-catch:
+            Please format the response using simple Markdown:
+            - Use a main heading for the recipe **Title**.
+            - Use subheadings like **Ingredients** and **Instructions** in bold.
+            - Use bullet points for the ingredients list.
+            - You can make key preparation steps **bold** as well.
+        """.trimIndent()
 
+        Log.d(TAG, "Requesting AI recipe generation using Firebase AI / Gemini for ${ingredients.size} ingredients")
         return try {
             val generativeModel = Firebase.vertexAI.generativeModel("gemini-1.5-flash")
-            val prompt = """
-                Suggest a simple recipe I can make with the following ingredients: 
-                $ingredientsText
-
-                Please format the response using simple Markdown:
-                - Use a main heading for the recipe **Title**.
-                - Use subheadings like **Ingredients** and **Instructions** in bold.
-                - Use bullet points for the ingredients list.
-                - You can make key preparation steps **bold** as well.
-            """.trimIndent()
-
             val response = generativeModel.generateContent(prompt)
+            Log.d(TAG, "AI response received successfully")
             response.text ?: getFallbackRecipe(ingredientsText)
         } catch (e: Exception) {
-            Log.e(TAG, "Error al generar la receta con la IA: ${e.message}")
+            Log.e(TAG, "Firebase AI request failed or service not available, using fallback: ${e.message}")
             getFallbackRecipe(ingredientsText)
         }
-        ====================================================================================
-        */
-
-        Log.d(TAG, "Generando sugerencia de receta para ${ingredients.size} ingredientes")
-        return getFallbackRecipe(ingredientsText)
     }
 
     private fun getFallbackRecipe(ingredientsText: String): String {

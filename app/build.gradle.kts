@@ -46,12 +46,10 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
-    // Firebase BoM
+    // Firebase BoM compatible con Kotlin 2.2
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore")
-
-    // Dependencia para conectar la IA de Firebase (Vertex AI / Gemini):
     implementation("com.google.firebase:firebase-vertexai")
 
     // Renderizado de Markdown para las recetas
