@@ -66,15 +66,16 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner
                     android:id="@+id/spUnit"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:minWidth="120dp" />
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <!-- 3. Fecha de caducidad y Desplegable de Categoría -->
@@ -90,7 +91,7 @@
                     style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="1.3"
                     android:hint="@string/expiration">
 
                     <com.google.android.material.textfield.TextInputEditText
@@ -100,15 +101,17 @@
                         android:clickable="true"
                         android:focusable="false"
                         android:inputType="none"
-                        android:maxLines="1" />
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <Spinner
                     android:id="@+id/spCategory"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:minWidth="140dp" />
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <!-- 4. Botones (Add/Update Ingredient y Clear) -->
